@@ -9,16 +9,42 @@ dotenv.config({ path: './config/config.env' });
 
 const app = express();
 
+const { books, authors } = require('./testData');
+
+const RootQueryType = Object({});
+
 //graphql schemas
 const typeDefs = gql`
   type Query {
-    message: String!
+    books: [Book!]!
+    authors: [Author]
+  }
+  type Book {
+    id: Int!
+    name: String!
+    authorId: Int!
+    author: Author!
+  }
+
+  type Author {
+    id: Int!
+    name: String!
+    books: [Book!]
   }
 `;
 
+//resolvers for graphql schemas
 const resolvers = {
   Query: {
-    message: () => 'Hello World!! ;)',
+    books: () => books,
+    authors: () => authors,
+  },
+  Book: {
+    author: (parentBook) =>
+      authors.find((author) => author.id === parentBook.authorId),
+  },
+  Author: {
+    books: (parent) => books.filter((book) => book.authorId === parent.id),
   },
 };
 
