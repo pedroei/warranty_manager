@@ -2,13 +2,17 @@ const User = require('../models/User');
 const Invoice = require('../models/Invoice');
 
 const { createUser, checkUserLogin } = require('../controllers/UserController');
-const { createInvoice } = require('../controllers/InvoiceController');
+const {
+  createInvoice,
+  editInvoice,
+  removeInvoice,
+} = require('../controllers/InvoiceController');
 
 //resolvers for graphql
 const resolvers = {
   Query: {
     user: async (parent, { id }) => await User.findOne({ _id: id }),
-    invoice: async (parent, { id }) => await Invoice.findOne({ _id: id }),
+    invoice: async (_, { id }) => await Invoice.findOne({ _id: id }),
     users: async () => await User.find(),
     invoices: async () => await Invoice.find(),
   },
@@ -22,17 +26,22 @@ const resolvers = {
   },
 
   Mutation: {
-    addUser: (_, { name, email, password }) => {
-      return createUser(name, email, password);
-    },
+    addUser: (_, { name, email, password }) =>
+      createUser(name, email, password),
 
-    // TODO - check if title, storeName and user are empty,
-    addInvoice: (_, args) => {
-      return createInvoice(args);
-    },
+    addInvoice: (_, args) => createInvoice(args),
 
-    loginUser: (_, { email, password }) => {
-      return checkUserLogin(email, password);
+    loginUser: (_, { email, password }) => checkUserLogin(email, password),
+
+    updateInvoice: (_, args) => editInvoice(args),
+
+    deleteInvoice: (_, { id }) => removeInvoice(id),
+  },
+
+  // Avoids warning saying that the intervface has no return on resolver
+  MutationResponse: {
+    __resolveType() {
+      return null;
     },
   },
 };

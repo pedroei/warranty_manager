@@ -50,6 +50,9 @@ const typeDefs = gql`
 
   type Mutation {
     addUser(name: String!, email: String!, password: String!): UserResponse!
+
+    loginUser(email: String!, password: String!): UserResponse!
+
     addInvoice(
       title: String!
       storeName: String!
@@ -58,9 +61,18 @@ const typeDefs = gql`
       warrantyFinalDate: String
       userID: ID!
     ): InvoiceResponse!
-    loginUser(email: String!, password: String!): UserResponse!
-    # edit invoice
+
+    updateInvoice(
+      id: ID!
+      title: String
+      storeName: String
+      storeUrl: String
+      document: String
+      warrantyFinalDate: String
+    ): InvoiceResponse!
+
     # delete invoice
+    deleteInvoice(id: ID!): InvoiceResponse!
   }
 `;
 

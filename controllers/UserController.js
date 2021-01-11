@@ -29,7 +29,7 @@ const createUser = async (name, email, password) => {
     await newUser.save();
 
     return (res = {
-      code: '200',
+      code: '201',
       success: true,
       message: 'User created',
       user: newUser,
