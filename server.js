@@ -9,16 +9,21 @@ dotenv.config({ path: './config/config.env' });
 
 const app = express();
 
-const { books, authors } = require('./testData');
+// connect to db
+connectDB();
 
-const RootQueryType = Object({});
+//data to est graphql
+const { books, authors } = require('./testData');
 
 //graphql schemas
 const typeDefs = gql`
   type Query {
+    book(id: Int!): Book!
+    author(id: Int!): Author!
     books: [Book!]!
     authors: [Author]
   }
+
   type Book {
     id: Int!
     name: String!
@@ -31,20 +36,50 @@ const typeDefs = gql`
     name: String!
     books: [Book!]
   }
+
+  type Mutation {
+    addBook(name: String!, authorId: Int!): Book!
+    addAuthor(name: String!): Author!
+  }
 `;
 
 //resolvers for graphql schemas
 const resolvers = {
   Query: {
+    book: (parent, args) => books.find((book) => book.id === args.id),
+    author: (parent, args) => authors.find((author) => author.id === args.id),
     books: () => books,
     authors: () => authors,
   },
+
   Book: {
     author: (parentBook) =>
       authors.find((author) => author.id === parentBook.authorId),
   },
+
   Author: {
-    books: (parent) => books.filter((book) => book.authorId === parent.id),
+    books: (parentAuthor) =>
+      books.filter((book) => book.authorId === parentAuthor.id),
+  },
+
+  Mutation: {
+    addBook: (_, { name, authorId }) => {
+      const book = {
+        id: books.length + 1,
+        name,
+        authorId,
+      };
+      books.push(book);
+      return book;
+    },
+    addAuthor: (_, { name }) => {
+      const author = {
+        id: authors.length + 1,
+        name,
+      };
+      authors.push(author);
+      return author;
+    },
   },
 };
 
@@ -53,9 +88,6 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
-
-// connect to db
-connectDB();
 
 // middleware
 server.applyMiddleware({ app });
