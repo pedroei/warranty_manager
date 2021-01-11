@@ -3,11 +3,10 @@ const { gql } = require('apollo-server-express');
 //graphql schemas
 const typeDefs = gql`
   type Query {
-    user(id: ID!): User!
+    user(id: ID!): User
     users: [User!]!
-    invoice(id: ID!): Invoice!
+    invoice(id: ID!): Invoice
     invoices: [Invoice!]!
-    # login user
   }
 
   type User {
@@ -29,6 +28,13 @@ const typeDefs = gql`
     user: User!
   }
 
+  type Response {
+    code: String!
+    success: Boolean!
+    message: String!
+    user: User
+  }
+
   type Mutation {
     addUser(name: String!, email: String!, password: String!): User!
     addInvoice(
@@ -39,6 +45,7 @@ const typeDefs = gql`
       warrantyFinalDate: String
       userID: ID!
     ): Invoice!
+    loginUser(email: String!, password: String!): Response
     # edit invoice
     # delete invoice
   }

@@ -44,6 +44,41 @@ const resolvers = {
       await newInvoice.save();
       return newInvoice;
     },
+    loginUser: async (_, { email, password }) => {
+      let res = {
+        code: '',
+        success: false,
+        message: '',
+        user: null,
+      };
+      try {
+        const user = await User.findOne({ email });
+        if (!user) {
+          res.code = 400;
+          res.message = 'Invalid Credentials';
+          return res;
+        }
+
+        const isMatchPassword = await bcrypts.compare(password, user.password);
+        if (!isMatchPassword) {
+          res.code = 400;
+          res.message = 'Invalid Credentials';
+          return res;
+        }
+
+        res = {
+          code: 200,
+          success: true,
+          message: 'Login successfully',
+          user,
+        };
+        return res;
+      } catch (e) {
+        res.code = 500;
+        res.message = e.message;
+        return res;
+      }
+    },
   },
 };
 
