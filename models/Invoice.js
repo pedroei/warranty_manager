@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const TransactionSchema = mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: [true, 'Please enter a title'],
   },
   storeName: {
     type: String,
-    required: true,
+    required: [true, 'Please enter the name of the store'],
   },
   storeUrl: {
     type: String,

@@ -34,15 +34,22 @@ const typeDefs = gql`
     message: String!
   }
 
-  type LoginResponse implements MutationResponse {
+  type UserResponse implements MutationResponse {
     code: String!
     success: Boolean!
     message: String!
     user: User
   }
 
+  type InvoiceResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    invoice: Invoice
+  }
+
   type Mutation {
-    addUser(name: String!, email: String!, password: String!): User!
+    addUser(name: String!, email: String!, password: String!): UserResponse!
     addInvoice(
       title: String!
       storeName: String!
@@ -50,8 +57,8 @@ const typeDefs = gql`
       document: String
       warrantyFinalDate: String
       userID: ID!
-    ): Invoice!
-    loginUser(email: String!, password: String!): LoginResponse
+    ): InvoiceResponse!
+    loginUser(email: String!, password: String!): UserResponse!
     # edit invoice
     # delete invoice
   }
