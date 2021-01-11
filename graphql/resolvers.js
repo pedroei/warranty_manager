@@ -19,7 +19,9 @@ const resolvers = {
     user: async (parent) => await User.findOne({ _id: parent.user }),
   },
 
+  // TODO - Maybe take those functions to some controllers
   Mutation: {
+    // TODO - check if email already exists, if nothing is empty, is email is an email and password at least 6 chars
     addUser: async (_, { name, email, password }) => {
       let newUser = new User({ name, email, password });
 
@@ -29,6 +31,8 @@ const resolvers = {
       await newUser.save();
       return newUser;
     },
+
+    // TODO - check if title, storeName and user are empty,
     addInvoice: async (
       _,
       { title, storeName, storeUrl, document, warrantyFinalDate, userID }
@@ -44,6 +48,7 @@ const resolvers = {
       await newInvoice.save();
       return newInvoice;
     },
+
     loginUser: async (_, { email, password }) => {
       let res = {
         code: '',
