@@ -28,7 +28,13 @@ const typeDefs = gql`
     user: User!
   }
 
-  type Response {
+  interface MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+  }
+
+  type LoginResponse implements MutationResponse {
     code: String!
     success: Boolean!
     message: String!
@@ -45,7 +51,7 @@ const typeDefs = gql`
       warrantyFinalDate: String
       userID: ID!
     ): Invoice!
-    loginUser(email: String!, password: String!): Response
+    loginUser(email: String!, password: String!): LoginResponse
     # edit invoice
     # delete invoice
   }
