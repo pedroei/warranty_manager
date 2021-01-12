@@ -10,6 +10,13 @@ const createUser = async (name, email, password) => {
     user: null,
   };
   try {
+    const user = User.find({ email });
+    if (user) {
+      res.code = 400;
+      res.message = 'This email is already being used';
+      return res;
+    }
+
     let newUser = new User({ name, email, password });
 
     if (password === '') {
