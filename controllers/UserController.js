@@ -11,7 +11,7 @@ const createUser = async (name, email, password) => {
   };
   try {
     const user = User.find({ email });
-    if (user) {
+    if (user.email) {
       res.code = 400;
       res.message = 'This email is already being used';
       return res;

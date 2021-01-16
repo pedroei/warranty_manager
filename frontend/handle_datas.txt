@@ -1,0 +1,9 @@
+    // Strategy to store date in string is:
+
+    const newDate = new Date(); // create a new date when creating a invoice
+    console.log(newDate);
+    console.log(typeof newDate);
+    console.log(newDate.toString()); // pass the warrantyFinalDate as the new date in string
+    console.log(typeof newDate.toString());
+    console.log(new Date(newDate.toString())); // when checking dates use pass the date string to the date constructor
+    console.log(typeof new Date(newDate.toString()));
