@@ -30,6 +30,7 @@ type ContextTypeUser = {
   login: LoginFunction;
   clearErrors: () => void;
   register: RegisterFunction;
+  logout: () => void;
 };
 
 type ContextStateUser = {
@@ -49,10 +50,10 @@ type InitialStateUser = {
 type ActionUser =
   | { type: 'LOGIN_USER'; payload: any }
   | { type: 'LOGIN_FAIL'; payload: any }
-  | { type: 'LOGOUT' }
   | { type: 'CLEAR_ERRORS' }
   | { type: 'REGISTER_USER'; payload: any }
-  | { type: 'REGISTER_FAIL'; payload: any };
+  | { type: 'REGISTER_FAIL'; payload: any }
+  | { type: 'LOGOUT' };
 
 type LoginFunction = (userLogin: { email: string; password: string }) => void;
 type RegisterFunction = (userRegister: {

@@ -11,7 +11,7 @@ interface NavBarProps {
 const Navbar: React.FC<NavBarProps> = ({ appName }) => {
   const userContext: any = useContext(UserContext);
 
-  const { isAuthenticated } = userContext;
+  const { isAuthenticated, user, logout } = userContext;
 
   const [activeLink, setActiveLink] = useState('');
 
@@ -20,10 +20,11 @@ const Navbar: React.FC<NavBarProps> = ({ appName }) => {
     // eslint-disable-next-line
   }, [window.location.pathname]);
 
-  const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log('Tried to search');
-  };
+  // Search submit
+  // const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   console.log('Tried to search');
+  // };
 
   const authLinks = (
     <>
@@ -33,27 +34,16 @@ const Navbar: React.FC<NavBarProps> = ({ appName }) => {
           <span className="sr-only">(current)</span>
         </Link>
       </li>
-      <li className={`nav-item ${activeLink === '/recent' && 'active'}`}>
+      <li className={`nav-item ${activeLink === '/addinvoice' && 'active'}`}>
         <Link
           className="nav-link"
-          to="/recent"
-          onClick={() => setActiveLink('/recent')}
+          to="/addinvoice"
+          onClick={() => setActiveLink('/addinvoice')}
         >
-          Most recent
+          Add Invoice
         </Link>
       </li>
-      <li className={`nav-item ${activeLink === '/toend' && 'active'}`}>
-        <Link
-          className="nav-link"
-          to="/toend"
-          onClick={() => setActiveLink('/toend')}
-        >
-          Warranties to end
-        </Link>
-      </li>
-      {/* Welcome message */}
       {/* Add invoice */}
-      {/* Logout */}
     </>
   );
 
@@ -101,7 +91,21 @@ const Navbar: React.FC<NavBarProps> = ({ appName }) => {
         <ul className="navbar-nav mr-auto">
           {isAuthenticated ? authLinks : guestLinks}
         </ul>
-        {!isAuthenticated && (
+        {isAuthenticated && user.name && (
+          <>
+            <span className="navbar-text mr-5 text-white">
+              Hello, {user.name}!
+            </span>
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <a className="nav-link" href="#" onClick={() => logout()}>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </>
+        )}
+        {/* {isAuthenticated && (
           <form className="form-inline my-2 my-lg-0">
             <input
               className="form-control mr-sm-2"
@@ -116,7 +120,7 @@ const Navbar: React.FC<NavBarProps> = ({ appName }) => {
               Search
             </button>
           </form>
-        )}
+        )} */}
       </div>
     </nav>
   );

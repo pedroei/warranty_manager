@@ -13,6 +13,7 @@ const LOGIN_MUTATION = gql`
       message
       user {
         id
+        name
       }
     }
   }
@@ -26,6 +27,7 @@ const REGISTER_MUTATION = gql`
       message
       user {
         id
+        name
       }
     }
   }
@@ -80,6 +82,10 @@ const TodoState: React.FC<React.ReactNode> = ({ children }) => {
     });
   };
 
+  //Logs the user out, retarts state
+  const logout = (): void => dispatch({ type: 'LOGOUT' });
+
+  // Clears all the error messages returned by server
   const clearErrors = (): void => {
     dispatch({
       type: 'CLEAR_ERRORS',
@@ -96,6 +102,7 @@ const TodoState: React.FC<React.ReactNode> = ({ children }) => {
         login,
         clearErrors,
         register,
+        logout,
       }}
     >
       {children}

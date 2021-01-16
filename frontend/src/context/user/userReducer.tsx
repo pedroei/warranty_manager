@@ -17,6 +17,14 @@ export default (state: ContextStateUser, action: ActionUser) => {
         user: null,
         error: action.payload,
       };
+    case 'LOGOUT':
+      return {
+        ...state,
+        isAuthenticated: false,
+        loading: false,
+        user: null,
+        error: null,
+      };
     case 'CLEAR_ERRORS':
       return {
         ...state,
