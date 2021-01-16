@@ -2,51 +2,49 @@ import { useContext, useEffect } from 'react';
 import Invoices from './invoices/Invoices';
 
 import UserContext from '../../context/user/userContext';
+
 import { RouteComponentProps } from 'react-router-dom';
+
+import { gql, useQuery } from '@apollo/client';
+import Spinner from '../layout/Spinner';
+
+const GET_USER_INVOICES = gql`
+  query GetUserInvoices($id: ID!) {
+    user(id: $id) {
+      invoices {
+        id
+        title
+        storeName
+        document
+        warrantyFinalDate
+      }
+    }
+  }
+`;
 
 // Needs to be here to properly extend and get the history props
 interface HomeProps extends RouteComponentProps {
   filter: string;
 }
 
-const invoices = [
-  {
-    id: 1,
-    title: 'Computador',
-    storeName: 'Fnac Portugal',
-    storeUrl: 'www.fnac.pt',
-    document: 'D:/docs/fatura1',
-    warrantyFinalDate: '21/12/2021',
-  },
-  {
-    id: 2,
-    title: 'Fones',
-    storeName: 'Worten',
-    storeUrl: 'www.worten.pt',
-    document: 'D:/docs/fatura2',
-    warrantyFinalDate: '12/07/2022',
-  },
-  {
-    id: 3,
-    title: 'Iphone X',
-    storeName: 'Vodafone',
-    storeUrl: 'www.vodafone.pt',
-    document: 'D:/docs/fatura3',
-    warrantyFinalDate: '16/01/2024',
-  },
-  {
-    id: 4,
-    title: 'Microsoft HoloLens',
-    storeName: 'Amazon ES',
-    storeUrl: 'www.amazon.es',
-    document: 'D:/docs/fatura4',
-    warrantyFinalDate: '25 05 2024',
-  },
-];
+/* When reloading this page, an error appears in console saying an't perform a React state update on an 
+unmounted component, this appeans because of React.StrictMode, it is resolved in Apollo 3.0.0 beta
+*/
 
 const Home: React.FC<HomeProps> = ({ filter, history }) => {
   const userContext: any = useContext(UserContext);
-  const { isAuthenticated } = userContext;
+  const { isAuthenticated, user } = userContext;
+
+  // Make sure the variable passed in useQuery is not null
+  // It will never be empty because when a user cant access the page without login
+  let userId = null;
+  if (user) userId = user.id;
+  else userId = '';
+
+  const { loading, error, data } = useQuery(GET_USER_INVOICES, {
+    variables: { id: userId },
+    pollInterval: 1000, // makes a request every 1 second
+  });
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -57,13 +55,16 @@ const Home: React.FC<HomeProps> = ({ filter, history }) => {
   }, [isAuthenticated, history]);
 
   if (filter) {
-    // This is to filter the order that appears inthe invoices, "most recent" or "date to end"
+    // This is to filter the order that appears in the invoices, "most recent" or "date to end"
     console.log(filter);
   }
 
+  if (loading) return <Spinner />;
+  if (error) return <h1>Error! {error}</h1>;
+
   return (
     <div className="container">
-      <Invoices invoices={invoices} />
+      <Invoices invoices={data.user.invoices} />
     </div>
   );
 };
