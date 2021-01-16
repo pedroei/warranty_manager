@@ -71,7 +71,6 @@ const typeDefs = gql`
       warrantyFinalDate: String
     ): InvoiceResponse!
 
-    # delete invoice
     deleteInvoice(id: ID!): InvoiceResponse!
   }
 `;
