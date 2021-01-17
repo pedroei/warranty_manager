@@ -72,9 +72,10 @@ const Navbar: React.FC<NavBarProps> = ({ appName }) => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <Link className="navbar-brand" to="/">
+      {/* eslint-disable-next-line */}
+      <a className="navbar-brand" href="#">
         {appName}
-      </Link>
+      </a>
       <button
         className="navbar-toggler"
         type="button"
@@ -98,7 +99,7 @@ const Navbar: React.FC<NavBarProps> = ({ appName }) => {
             </span>
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link" href="#" onClick={() => logout()}>
+                <a className="nav-link" href="/#" onClick={() => logout()}>
                   Logout
                 </a>
               </li>
