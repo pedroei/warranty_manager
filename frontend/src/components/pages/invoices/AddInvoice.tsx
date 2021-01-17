@@ -5,8 +5,7 @@ import UserContext from '../../../context/user/userContext';
 
 import { useMutation, gql } from '@apollo/client';
 
-import { Document, Page, pdfjs } from 'react-pdf';
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+import Pdf from '../pdf/Pdf';
 
 const ADD_INVOICE_MUTATION = gql`
   mutation AddInvoice(
@@ -214,52 +213,56 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
               />
             </div>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="warrantyFinalDate">Warranty end date</label>
-            <input
-              type="date"
-              className="form-control"
-              id="warrantyFinalDate"
-              name="warrantyFinalDate"
-              value={newInvoice.warrantyFinalDate}
-              onChange={onChange}
-            />
-            {localError.warrantyFinalDate && (
-              <small className="form-text text-danger">
-                {localError.warrantyFinalDate}
-              </small>
-            )}
+          <div className="row">
+            <div className="form-group col-6">
+              <label htmlFor="warrantyFinalDate">Warranty end date</label>
+              <input
+                type="date"
+                className="form-control"
+                id="warrantyFinalDate"
+                name="warrantyFinalDate"
+                value={newInvoice.warrantyFinalDate}
+                onChange={onChange}
+              />
+              {localError.warrantyFinalDate && (
+                <small className="form-text text-danger">
+                  {localError.warrantyFinalDate}
+                </small>
+              )}
+            </div>
+            <div className="form-group col-6">
+              <label htmlFor="document">Invoice PDF</label>
+              <input
+                type="file"
+                className="form-control-file"
+                id="document"
+                name="document"
+                value={newInvoice.document}
+                onChange={onChangeFile}
+              />
+              {localError.document && (
+                <small className="form-text text-danger">
+                  {localError.document}
+                </small>
+              )}
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="document">Invoice PDF</label>
-            <input
-              type="file"
-              className="form-control-file"
-              id="document"
-              name="document"
-              value={newInvoice.document}
-              onChange={onChangeFile}
-            />
-            {localError.document && (
-              <small className="form-text text-danger">
-                {localError.document}
-              </small>
-            )}
-          </div>
-
           <button
             type="submit"
-            className="btn btn-primary mt-2"
+            className="btn btn-primary mt-2 mb-2"
             onClick={handleSubmit}
           >
             Submit
           </button>
         </fieldset>
       </form>
-      <Document file={uploadedFile.file}>
-        <Page height={500} pageNumber={1} />
-      </Document>
+      <div className="row justify-content-center mb-4">
+        <Pdf
+          preview={true}
+          previewSize={700}
+          selectedFile={uploadedFile.file}
+        />
+      </div>
     </div>
   );
 };
