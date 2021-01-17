@@ -43,7 +43,7 @@ const Home: React.FC<HomeProps> = ({ filter, history }) => {
 
   const { loading, error, data } = useQuery(GET_USER_INVOICES, {
     variables: { id: userId },
-    pollInterval: 1000, // makes a request every 1 second
+    pollInterval: 500, // makes a request every 1 second
   });
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const Home: React.FC<HomeProps> = ({ filter, history }) => {
   if (error) return <h1>Error! {error}</h1>;
 
   return (
-    <div className="container">
+    <div className="container mb-4">
       <Invoices invoices={data.user.invoices} />
     </div>
   );

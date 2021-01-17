@@ -3,9 +3,42 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import UserContext from '../../../context/user/userContext';
 
+import { useMutation, gql } from '@apollo/client';
+
+import { Document, Page, pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+const ADD_INVOICE_MUTATION = gql`
+  mutation AddInvoice(
+    $title: String!
+    $storeName: String!
+    $document: String!
+    $warrantyFinalDate: String!
+    $userID: ID!
+  ) {
+    addInvoice(
+      title: $title
+      storeName: $storeName
+      document: $document
+      warrantyFinalDate: $warrantyFinalDate
+      userID: $userID
+    ) {
+      code
+      success
+      message
+      invoice {
+        id
+        user {
+          id
+        }
+      }
+    }
+  }
+`;
+
 const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
   const userContext: any = useContext(UserContext);
-  const { isAuthenticated } = userContext;
+  const { isAuthenticated, user } = userContext;
 
   const [newInvoice, setNewInvoice] = useState({
     title: '',
@@ -14,6 +47,8 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
     document: '',
     warrantyFinalDate: '',
   });
+
+  const [uploadedFile, setUploadedFile] = useState({ file: '', fileName: '' });
 
   const [localError, setLocalError] = useState({
     title: '',
@@ -31,8 +66,34 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
     // eslint-disable-next-line
   }, [isAuthenticated, history]);
 
+  const [addInvoice] = useMutation(ADD_INVOICE_MUTATION);
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) =>
     setNewInvoice({ ...newInvoice, [e.target.name]: e.target.value });
+
+  const onChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile: any = e.target.files;
+    let file: any = null;
+    let fileName = '';
+    //Check File is not Empty
+    if (selectedFile.length > 0) {
+      // Select the very first file from list
+      let fileToLoad = selectedFile[0];
+      fileName = fileToLoad.name;
+      // FileReader function for read the file.
+      let fileReader = new FileReader();
+      // Onload of file read the file content
+      fileReader.onload = function (fileLoadedEvent: any) {
+        file = fileLoadedEvent.target.result;
+        // Print data in console
+        // console.log(file);
+        setUploadedFile({ file, fileName });
+      };
+      // Convert data to base64
+      fileReader.readAsDataURL(fileToLoad);
+      setNewInvoice({ ...newInvoice, [e.target.name]: e.target.value });
+    }
+  };
 
   const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -56,12 +117,29 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
       });
 
     console.log(newInvoice);
-    setNewInvoice({
-      title: '',
-      storeName: '',
-      storeUrl: '',
-      document: '',
-      warrantyFinalDate: '',
+    console.log(uploadedFile);
+
+    addInvoice({
+      variables: {
+        title: newInvoice.title,
+        storeName: newInvoice.storeName,
+        document: uploadedFile.file,
+        warrantyFinalDate: newInvoice.warrantyFinalDate,
+        userID: user.id,
+      },
+    }).then(({ data }) => {
+      if (data.addInvoice.code === '200') {
+        setNewInvoice({
+          title: '',
+          storeName: '',
+          storeUrl: '',
+          document: '',
+          warrantyFinalDate: '',
+        });
+        history.push('/');
+      } else {
+        console.log('Error creating invoice', data.addInvoice.message);
+      }
     });
     // console.log(new Date(newInvoice.warrantyFinalDate));
   };
@@ -161,7 +239,7 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
               id="document"
               name="document"
               value={newInvoice.document}
-              onChange={onChange}
+              onChange={onChangeFile}
             />
             {localError.document && (
               <small className="form-text text-danger">
@@ -179,6 +257,9 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
           </button>
         </fieldset>
       </form>
+      <Document file={uploadedFile.file}>
+        <Page height={500} pageNumber={1} />
+      </Document>
     </div>
   );
 };

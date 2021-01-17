@@ -20,8 +20,8 @@ const server = new ApolloServer({
 });
 
 // middleware
+app.use(express.json({ limit: '50mb' })); // needen a higher limit to make the base64 pdf post request (50mb is too much)
 server.applyMiddleware({ app });
-app.use(express.json());
 
 // routes
 app.use((req, res) => {
