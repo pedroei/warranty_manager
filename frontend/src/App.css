@@ -5,3 +5,25 @@
 .width-60 {
   width: 60%;
 }
+
+.inline-block {
+  display: inline-block;
+}
+
+.undeline {
+  text-decoration: underline;
+}
+
+.fa-trash {
+  cursor: pointer;
+}
+.fa-trash:hover {
+  color: #d9534f;
+}
+
+.fa-pencil-alt {
+  cursor: pointer;
+}
+.fa-pencil-alt:hover {
+  color: #f0ad4e;
+}

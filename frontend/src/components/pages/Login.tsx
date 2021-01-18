@@ -21,6 +21,8 @@ const Login: React.FC<RouteComponentProps> = (props) => {
     password: '',
   });
 
+  if (isAuthenticated) return null;
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) =>
     setUserLogin({ ...userLogin, [e.target.name]: e.target.value });
 

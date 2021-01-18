@@ -53,6 +53,7 @@ const Home: React.FC<HomeProps> = ({ filter, history }) => {
 
     // eslint-disable-next-line
   }, [isAuthenticated, history]);
+  if (!isAuthenticated) return null;
 
   if (filter) {
     // This is to filter the order that appears in the invoices, "most recent" or "date to end"

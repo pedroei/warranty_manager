@@ -27,18 +27,28 @@ const Pdf: React.FC<PdfProps> = ({ preview, previewSize, selectedFile }) => {
         </Document>
       )}
       {!preview && (
-        <div>
+        <div className="text-center">
           <Document file={selectedFile} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} />
+            <Page pageNumber={pageNumber} height={previewSize} />
           </Document>
           <p>
             Page {pageNumber} of {numPages}
           </p>
           {pageNumber > 1 && (
-            <button onClick={() => setPageNumber(pageNumber - 1)}>Prev</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => setPageNumber(pageNumber - 1)}
+            >
+              Prev
+            </button>
           )}
           {pageNumber < numPages! && (
-            <button onClick={() => setPageNumber(pageNumber + 1)}>Next</button>
+            <button
+              className="btn btn-primary ml-3"
+              onClick={() => setPageNumber(pageNumber + 1)}
+            >
+              Next
+            </button>
           )}
         </div>
       )}

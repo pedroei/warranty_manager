@@ -4,6 +4,10 @@ interface InvoicesProps {
   invoices: Invoice[];
 }
 
+interface routerParams {
+  id: string;
+}
+
 // Object Types
 type Invoice = {
   id: int;

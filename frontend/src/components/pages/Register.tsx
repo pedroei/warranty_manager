@@ -27,6 +27,8 @@ const Register: React.FC<RouteComponentProps> = (props) => {
     password: '',
   });
 
+  if (isAuthenticated) return null;
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) =>
     setNewUser({ ...newUser, [e.target.name]: e.target.value });
 

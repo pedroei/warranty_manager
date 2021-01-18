@@ -11,6 +11,7 @@ const ADD_INVOICE_MUTATION = gql`
   mutation AddInvoice(
     $title: String!
     $storeName: String!
+    $storeUrl: String
     $document: String!
     $warrantyFinalDate: String!
     $userID: ID!
@@ -18,6 +19,7 @@ const ADD_INVOICE_MUTATION = gql`
     addInvoice(
       title: $title
       storeName: $storeName
+      storeUrl: $storeUrl
       document: $document
       warrantyFinalDate: $warrantyFinalDate
       userID: $userID
@@ -67,6 +69,8 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
 
   const [addInvoice] = useMutation(ADD_INVOICE_MUTATION);
 
+  if (!isAuthenticated) return null;
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) =>
     setNewInvoice({ ...newInvoice, [e.target.name]: e.target.value });
 
@@ -115,13 +119,14 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
         document: 'Please insert the invoice pdf',
       });
 
-    console.log(newInvoice);
-    console.log(uploadedFile);
+    // console.log(newInvoice);
+    // console.log(uploadedFile);
 
     addInvoice({
       variables: {
         title: newInvoice.title,
         storeName: newInvoice.storeName,
+        storeUrl: newInvoice.storeUrl,
         document: uploadedFile.file,
         warrantyFinalDate: newInvoice.warrantyFinalDate,
         userID: user.id,

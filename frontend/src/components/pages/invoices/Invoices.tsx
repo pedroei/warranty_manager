@@ -1,15 +1,20 @@
+import { Link } from 'react-router-dom';
 import Pdf from '../pdf/Pdf';
 
 const Invoices: React.FC<InvoicesProps> = ({ invoices }) => {
   return (
     <div className="mt-5">
-      <h1>All Invoices</h1>
+      {invoices.length > 0 ? (
+        <h1>All Invoices</h1>
+      ) : (
+        <h1>No Invoices to display</h1>
+      )}
       <div className="list-group mt-4">
         {invoices &&
           invoices.map((invoice) => (
-            <a
+            <Link
               key={invoice.id}
-              href="/#"
+              to={`/invoice/${invoice.id}`}
               className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
             >
               <div>
@@ -23,7 +28,7 @@ const Invoices: React.FC<InvoicesProps> = ({ invoices }) => {
                 previewSize={100}
                 selectedFile={invoice.document}
               />
-            </a>
+            </Link>
           ))}
       </div>
     </div>
