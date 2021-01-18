@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Pdf from '../pdf/Pdf';
 
 const Invoices: React.FC<InvoicesProps> = ({ invoices }) => {
+  let invoicesReverseOrder = invoices.map((invoice) => invoice).reverse();
   return (
     <div className="mt-5">
       {invoices.length > 0 ? (
@@ -11,7 +12,7 @@ const Invoices: React.FC<InvoicesProps> = ({ invoices }) => {
       )}
       <div className="list-group mt-4">
         {invoices &&
-          invoices.map((invoice) => (
+          invoicesReverseOrder.map((invoice) => (
             <Link
               key={invoice.id}
               to={`/invoice/${invoice.id}`}
@@ -23,6 +24,7 @@ const Invoices: React.FC<InvoicesProps> = ({ invoices }) => {
                 <span>{invoice.warrantyFinalDate}</span>
               </div>
               {/* <img src="http://via.placeholder.com/100x100" alt="" /> */}
+              {/* Pdf Preview makes app slow but works well */}
               <Pdf
                 preview={true}
                 previewSize={100}
