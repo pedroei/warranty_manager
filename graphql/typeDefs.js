@@ -38,6 +38,7 @@ const typeDefs = gql`
     code: String!
     success: Boolean!
     message: String!
+    token: String!
     user: User
   }
 

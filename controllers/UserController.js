@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypts = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // Adds a new user
 const createUser = async (name, email, password) => {
@@ -7,6 +8,7 @@ const createUser = async (name, email, password) => {
     code: '',
     success: false,
     message: '',
+    token: '',
     user: null,
   };
   try {
@@ -35,10 +37,15 @@ const createUser = async (name, email, password) => {
 
     await newUser.save();
 
+    const payload = {
+      userId: newUser.id,
+    };
+
     return (res = {
       code: '201',
       success: true,
       message: 'User created',
+      token: genToken(payload),
       user: newUser,
     });
   } catch (e) {
@@ -63,6 +70,7 @@ const checkUserLogin = async (email, password) => {
     code: '',
     success: false,
     message: '',
+    token: '',
     user: null,
   };
   try {
@@ -86,12 +94,25 @@ const checkUserLogin = async (email, password) => {
       message: 'Login successfully',
       user,
     };
+
+    const payload = {
+      userId: user.id,
+    };
+
+    res.token = genToken(payload);
+
     return res;
   } catch (e) {
     res.code = 500;
     res.message = e.message;
     return res;
   }
+};
+
+const genToken = (payload) => {
+  return jwt.sign(payload, 'jwtSecret', {
+    expiresIn: 360000,
+  });
 };
 
 module.exports = { createUser, checkUserLogin };
