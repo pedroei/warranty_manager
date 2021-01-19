@@ -1,6 +1,18 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
-const NotFound: React.FC = () => {
+import UserContext from '../../context/user/userContext';
+
+const NotFound: React.FC<RouteComponentProps> = ({ history }) => {
+  const userContext: any = useContext(UserContext);
+
+  const { isAuthenticated, auth } = userContext;
+
+  useEffect(() => {
+    auth();
+    // eslint-disable-next-line
+  }, [isAuthenticated, history]);
+
   return (
     <div className="container mt-5">
       <h1 className="display-3">Not Found</h1>

@@ -33,7 +33,7 @@ unmounted component, this appeans because of React.StrictMode, it is resolved in
 
 const Home: React.FC<HomeProps> = ({ filter, history }) => {
   const userContext: any = useContext(UserContext);
-  const { isAuthenticated, user } = userContext;
+  const { isAuthenticated, user, auth } = userContext;
 
   // Make sure the variable passed in useQuery is not null
   // It will never be empty because when a user cant access the page without login
@@ -47,7 +47,8 @@ const Home: React.FC<HomeProps> = ({ filter, history }) => {
   });
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    auth();
+    if (!localStorage.token && !isAuthenticated) {
       history.push('/login');
     }
 

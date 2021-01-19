@@ -2,8 +2,10 @@ import { useReducer } from 'react';
 import UserContext from './userContext';
 import UserReducer from './userReducer';
 
+import jwt from 'jsonwebtoken';
+
 // Apollo graphql
-import { useMutation, gql } from '@apollo/client';
+import { useMutation, gql, useQuery } from '@apollo/client';
 
 const LOGIN_MUTATION = gql`
   mutation LoginUser($email: String!, $password: String!) {
@@ -11,6 +13,7 @@ const LOGIN_MUTATION = gql`
       code
       success
       message
+      token
       user {
         id
         name
@@ -25,10 +28,20 @@ const REGISTER_MUTATION = gql`
       code
       success
       message
+      token
       user {
         id
         name
       }
+    }
+  }
+`;
+
+const GET_USER = gql`
+  mutation GetUser($id: ID!) {
+    getUser(id: $id) {
+      id
+      name
     }
   }
 `;
@@ -45,6 +58,27 @@ const TodoState: React.FC<React.ReactNode> = ({ children }) => {
 
   const [loginUser] = useMutation(LOGIN_MUTATION);
   const [addUser] = useMutation(REGISTER_MUTATION);
+  const [getUser] = useMutation(GET_USER);
+
+  type DecodedToken = {
+    userId: string;
+  };
+  //Load token
+  const auth: AuthFunction = () => {
+    if (localStorage.token) {
+      const decoded: DecodedToken | any = jwt.verify(
+        localStorage.token,
+        'jwtSecret'
+      );
+
+      getUser({ variables: { id: decoded.userId } }).then(({ data }) => {
+        dispatch({
+          type: 'AUTH',
+          payload: data.getUser,
+        });
+      });
+    }
+  };
 
   // Login user
   const login: LoginFunction = ({ email, password }) => {
@@ -103,6 +137,7 @@ const TodoState: React.FC<React.ReactNode> = ({ children }) => {
         clearErrors,
         register,
         logout,
+        auth,
       }}
     >
       {children}

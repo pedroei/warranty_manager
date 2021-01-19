@@ -29,6 +29,8 @@ const resolvers = {
     addUser: (_, { name, email, password }) =>
       createUser(name, email, password),
 
+    getUser: async (_, { id }) => await User.findOne({ _id: id }),
+
     addInvoice: (_, args) => createInvoice(args),
 
     loginUser: (_, { email, password }) => checkUserLogin(email, password),

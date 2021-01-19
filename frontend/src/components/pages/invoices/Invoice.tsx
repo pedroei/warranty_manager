@@ -56,7 +56,7 @@ const EDIT_INVOICE_MUTATION = gql`
 const Invoice: React.FC<RouteComponentProps> = ({ history }) => {
   const { id } = useParams<routerParams>();
   const userContext: any = useContext(UserContext);
-  const { isAuthenticated } = userContext;
+  const { isAuthenticated, auth } = userContext;
 
   const { loading, error, data } = useQuery(GET_SINGLE_INVOICE, {
     variables: { id },
@@ -87,7 +87,8 @@ const Invoice: React.FC<RouteComponentProps> = ({ history }) => {
   const [uploadedFile, setUploadedFile] = useState({ file: '', fileName: '' });
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    auth();
+    if (!localStorage.token && !isAuthenticated) {
       history.push('/login');
     }
 

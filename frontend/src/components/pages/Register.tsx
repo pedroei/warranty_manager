@@ -6,10 +6,11 @@ import UserContext from '../../context/user/userContext';
 const Register: React.FC<RouteComponentProps> = (props) => {
   const userContext: any = useContext(UserContext);
 
-  const { register, isAuthenticated, error, clearErrors } = userContext;
+  const { register, isAuthenticated, error, clearErrors, auth } = userContext;
 
   useEffect(() => {
-    if (isAuthenticated) {
+    auth();
+    if (localStorage.token || isAuthenticated) {
       props.history.push('/');
     }
 
@@ -27,7 +28,7 @@ const Register: React.FC<RouteComponentProps> = (props) => {
     password: '',
   });
 
-  if (isAuthenticated) return null;
+  if (localStorage.token || isAuthenticated) return null;
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) =>
     setNewUser({ ...newUser, [e.target.name]: e.target.value });

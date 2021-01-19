@@ -40,7 +40,7 @@ const ADD_INVOICE_MUTATION = gql`
 
 const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
   const userContext: any = useContext(UserContext);
-  const { isAuthenticated, user } = userContext;
+  const { isAuthenticated, user, auth } = userContext;
 
   const [newInvoice, setNewInvoice] = useState({
     title: '',
@@ -63,7 +63,8 @@ const AddInvoice: React.FC<RouteComponentProps> = ({ history }) => {
   const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    auth();
+    if (!localStorage.token && !isAuthenticated) {
       history.push('/login');
     }
 
